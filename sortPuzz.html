@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.5.1.js"></script>
+
+    <style>
+        .anaDiv {
+            width: 1000px;
+            height: 400px;
+            margin-top: 250px;
+        }
+
+        .sutun {
+            width: 110px;
+            height: 450px;
+            float: left;
+            margin-left: 10px;
+            padding-bottom: 20px;
+            padding-top: 10px;
+            border-radius: 20px 20px 0 0;
+
+        }
+
+        .renkkk {
+            width: 100%;
+            height: 25%;
+            z-index: -1;
+            margin-bottom: 3px;
+        }
+
+        .sutun:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script>
+
+        var baslangic = prompt("lütfen 'elden' veya 'hazır' yazarak seçim yapınız.")
+        var tupsayisi;
+        var renkler = [];
+
+        if (baslangic == "hazır") {
+            tupsayisi = 5
+            for (var i = 0; i < tupsayisi; i++) {
+                renkler[i] = [];
+            }
+            tupsayisi = 5;
+            renkler[0][0] = "green";
+            renkler[0][1] = "green";
+            renkler[0][2] = "green";
+            renkler[0][3] = "red";
+
+            renkler[1][0] = "green";
+            renkler[1][1] = "pink";
+            renkler[1][2] = "red";
+            renkler[1][3] = "yellow";
+
+            renkler[2][0] = "yellow";
+            renkler[2][1] = "red";
+            renkler[2][2] = "yellow";
+            renkler[2][3] = "pink";
+
+            renkler[3][0] = "pink";
+            renkler[3][1] = "yellow";
+            renkler[3][2] = "pink";
+            renkler[3][3] = "red";
+
+            renkler[4][0] = "--";
+            renkler[4][1] = "--";
+            renkler[4][2] = "--";
+            renkler[4][3] = "--";
+        }
+        else if (baslangic == "elden") {
+
+            tupsayisi = prompt("tüp sayısı giriniz. (Sadece rakam giriniz)");
+            tupsayisi = Number(tupsayisi);
+            for (var i = 0; i < tupsayisi; i++) {
+                renkler[i] = [];
+            }
+
+
+            for (var i = 0; i < tupsayisi; i++) {
+                for (var j = 0; j < 4; j++) {
+                    renkler[i][j] = prompt(i + 1 + ". sutun " + (j + 1) + ". satırın rengini giriniz. -------------- UYARI: ( Renkleri ingilizce, boşluklar iki tire '--' kullanarak sutunları yukarıdan aşağıya doğru doldurunuz)");
+                }
+
+            }
+        }
+        else {
+            alert("doğru seçim yapmadınız..")
+        }
+
+
+        function anaDivOlustur() 
+        {
+            div = document.createElement("div");
+            div.classList = "anaDiv";
+            document.body.appendChild(div);
+            var genislik = $(window).width();
+            div.style.width = (tupsayisi * 120) + "px";
+            div.style.marginLeft = ((genislik - tupsayisi * 120 - tupsayisi * 5) / 2) + "px";
+        }
+
+        var renkkat;
+        var sutun;
+
+        function tupOlustur() {
+            for (var i = 0; i < tupsayisi; i++) {
+                var sutun = document.createElement("button");
+                sutun.classList = "sutun";
+                sutun.setAttribute("id", i);
+                div.appendChild(sutun);
+
+                for (var j = 0; j < 4; j++) {
+                    var renkKat = document.createElement("div");
+                    renkKat.classList = "renkkk";
+                    renkKat.setAttribute("id", i + "." + j);
+                    renkKat.setAttribute("value", "#" + i + "." + j);
+                    sutun.appendChild(renkKat);
+                }
+            }
+
+
+        }
+
+        function yenile() {
+            for (var i = 0; i < tupsayisi; i++) {
+                for (var j = 0; j < 4; j++) {
+                    var grenk = renkler[i][j];
+                    document.getElementById(i + "." + j).style.backgroundColor = "";
+                    document.getElementById(i + "." + j).style.backgroundColor = grenk;
+                    document.getElementById(i + "." + j).setAttribute("name", grenk);
+                }
+
+                document.getElementById(i + ".0").style.borderRadius = "20px 20px 0 0";
+
+            }
+
+        }
+
+        anaDivOlustur();
+        tupOlustur();
+        yenile();
+
+        var bos = true;
+        var dolu = false;
+        var bittimi = false;
+
+        $(function () {
+            var eldekiRenk = "bos";
+            var eldekiDeger = "";
+            var konum;
+            var sayac = 0;
+            $(".sutun").click(function () {
+                var bakilansutun, bakilansatir, eldekisutun, eldekisatir;
+                var aydia = $(this).attr("id");
+                dolumu(aydia);
+
+                function dolumu(aydia) {
+                    var elde = renkler[aydia][0];
+
+                    var say = 0;
+                    for (var i = 0; i < 4; i++) {
+                        if (elde == "--") {
+                            dolu = false;
+                            break;
+                        }
+                        else if (elde == renkler[aydia][i]) {
+                            say++;
+                            if (say == 4) {
+                                dolu = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                function bittiMi() {
+                    var bsayac = 0;
+                    var ssayac = 0;
+                    for (var i = 0; i < tupsayisi; i++) {
+                        var edeki = renkler[i][0];
+                        for (var j = 0; j < 4; j++) {
+                            if (edeki == renkler[i][j]) {
+                                bsayac++;
+                                if (bsayac == 4 * tupsayisi) {
+                                    bittimi = true;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+
+                if (bos == true && dolu != true) {
+                    ilkTik(aydia);
+                    eldekiDeger = aydia;
+                    bos = false;
+
+
+                }
+                else if (bos != true && eldekiDeger != aydia && renkler[aydia][0] == "--") {
+                    ikinciTik(aydia, konum, eldekiRenk);
+                    bittiMi();
+
+                    document.getElementById(eldekiDeger).style.opacity = "1.0";
+                    document.getElementById(eldekiDeger).style.marginTop = "0px";
+                    eldekiDeger = "";
+                    sayac = 0;
+                    bos = true;
+                    if (bittimi == true) {
+
+                        setTimeout(b, 1000);
+                    }
+                }
+                else if (eldekiDeger == aydia) {
+                    document.getElementById(eldekiDeger).style.opacity = "1.0";
+                    document.getElementById(eldekiDeger).style.marginTop = "0px";
+                    eldekiDeger = "";
+                    sayac = 0;
+                    bos = true;
+                }
+                else {
+                    document.getElementById(eldekiDeger).style.opacity = "1.0";
+                    document.getElementById(eldekiDeger).style.marginTop = "0px";
+
+                    eldekiDeger = "";
+                    sayac = 0;
+                    bos = true;
+                }
+
+                function b() {
+                    alert("oyun bitti tebrikler..");
+                    window.location.reload(false)
+                }
+
+                function ilkTik(aydia) {
+
+
+                    document.getElementById(aydia).style.opacity = "0.5";
+                    document.getElementById(aydia).style.marginTop = "-20px";
+                    for (var i = 0; i < 4; i++) {
+                        if (renkler[aydia][i] != "--") {
+                            eldekiRenk = renkler[aydia][i];
+                            konum = aydia + "." + i;
+
+                            break;
+                        }
+
+                    }
+
+                    for (var i = 0; i < 4; i++) {
+                        if (renkler[aydia][i] != "--") {
+                            if (eldekiRenk == renkler[aydia][i]) {
+                                sayac++;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                    }
+
+                    bos = false;
+
+                }
+
+                function ikinciTik(aydia, konum, eldekiRenk) {
+
+                    var bosSayisi;
+                    var atanacakKonum;
+                    var konumdakiRenk;
+                    if (renkler[aydia][0] == "--") {
+                        for (var i = 0; i < 4; i++) {
+                            if (renkler[aydia][i] != "--") {
+                                konumdakiRenk = renkler[aydia][i];
+                                atanacakKonum = aydia + "." + (i - 1);
+                                bosSayisi = i;
+                                break;
+                            }
+                            else {
+                                if (i == 3) {
+                                    konumdakiRenk = "boş"
+                                    atanacakKonum = aydia + ".3";
+                                    bosSayisi = 4;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+
+
+                    if (eldekiRenk == konumdakiRenk || konumdakiRenk == "boş") {
+
+                        var esutun = konum.slice(0, 1);
+                        var esatir = konum.slice(2, 3);
+                        var asutun = atanacakKonum.slice(0, 1);
+                        var asatir = atanacakKonum.slice(2, 3);
+                        var tasinma = 0;
+                        if (bosSayisi > sayac) {
+                            tasinma = sayac;
+                        }
+                        else {
+                            tasinma = bosSayisi;
+                        }
+
+                        for (var i = 0; i < tasinma; i++) {
+                            renkler[asutun][asatir] = renkler[esutun][esatir];
+                            renkler[esutun][esatir] = "--"
+                            asatir--;
+                            esatir++;
+
+                        }
+
+                        yenile();
+
+                    }
+                    else {
+                        document.getElementById(eldekiDeger).style.opacity = "1.0";
+                        document.getElementById(ayeldekiDegerdia).style.marginTop = "0px";
+                        bos = true;
+                        eldekiDeger = "";
+                        sayac = 0;
+                    }
+
+
+                }
+
+            });
+
+        }
+        );
+
+
+
+
+
+    </script>
+
+</body>
